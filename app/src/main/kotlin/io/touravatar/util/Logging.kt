@@ -2,7 +2,8 @@ package io.touravatar.util
 
 import android.util.Log
 
-private const val TAG_PREFIX = "TourAvatar"
+@PublishedApi
+internal const val TAG_PREFIX = "TourAvatar"
 
 inline fun <reified T> T.logD(msg: String) =
     Log.d("$TAG_PREFIX/${T::class.java.simpleName}", msg)

@@ -2,6 +2,7 @@ package io.touravatar.chat
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import io.touravatar.data.ChatRepository
 import io.touravatar.data.MessageEntity
 import io.touravatar.data.Role
@@ -50,6 +51,7 @@ class ChatViewModel(
      * Stream of messages for the current conversation. The UI binds a
      * RecyclerView to this flow.
      */
+    @OptIn(ExperimentalCoroutinesApi::class)
     val messages: kotlinx.coroutines.flow.Flow<List<MessageEntity>> = _conversationId
         .flatMapLatest { id ->
             if (id == null) kotlinx.coroutines.flow.flowOf(emptyList())

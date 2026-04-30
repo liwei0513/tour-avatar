@@ -25,7 +25,7 @@ class HistoryActivity : AppCompatActivity() {
 
         binding.topBar.setNavigationOnClickListener { finish() }
 
-        adapter = HistoryAdapter { conversation ->
+        adapter = HistoryAdapter { _ ->
             // For the MVP, "resume" simply finishes back to MainActivity.
             // A future revision can broadcast the selected conversation id
             // back to MainActivity via a result contract.
