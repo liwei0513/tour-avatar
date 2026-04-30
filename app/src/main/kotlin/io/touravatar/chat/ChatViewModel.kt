@@ -149,6 +149,7 @@ class ChatViewModel(
     private fun handleUserUtterance(text: String) {
         if (text.isBlank()) {
             _state.value = DialogState.Idle
+            _avatarCommands.tryEmit(AvatarCommand.SetEmotion("idle"))
             return
         }
         val convId = _conversationId.value ?: return
