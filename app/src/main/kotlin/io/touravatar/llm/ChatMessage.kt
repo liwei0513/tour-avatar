@@ -16,6 +16,10 @@ data class ChatCompletionRequest(
     val stream: Boolean = true,
     val temperature: Double = 0.7,
     @SerialName("max_tokens") val maxTokens: Int? = null,
+    /** Ollama-specific: turn off "thinking" mode in reasoning-capable models
+     *  (e.g. Gemma 4, qwq, deepseek-r1) so the response is direct content
+     *  rather than long internal reasoning chunks. Ignored by non-Ollama servers. */
+    val think: Boolean? = null,
 )
 
 @Serializable
@@ -33,4 +37,7 @@ data class ChatStreamChoice(
 data class ChatStreamDelta(
     val role: String? = null,
     val content: String? = null,
+    /** Ollama returns reasoning chunks here for thinking-mode models;
+     *  we keep it parsed so future revisions can surface it as a separate UI lane. */
+    val reasoning: String? = null,
 )

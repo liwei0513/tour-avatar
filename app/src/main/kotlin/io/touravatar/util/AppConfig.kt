@@ -35,4 +35,9 @@ object AppConfig {
 
     /** Max tokens to keep in conversation context window. */
     var contextWindow: Int = 16
+
+    /** Disable "thinking" mode in reasoning-capable models (Gemma 4, deepseek-r1, qwq).
+     *  For tour-guide use we want fast direct answers, not long internal reasoning.
+     *  Set to null to leave the server default. Ignored by non-Ollama servers. */
+    var disableThinking: Boolean? = true
 }

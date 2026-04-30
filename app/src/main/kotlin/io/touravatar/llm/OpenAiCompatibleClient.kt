@@ -30,14 +30,25 @@ class OpenAiCompatibleClient(
         .readTimeout(120, TimeUnit.SECONDS)
         .build()
 
-    private val json = Json { ignoreUnknownKeys = true; isLenient = true }
+    private val json = Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+        // CRITICAL: without this, default-valued fields (stream=true, temperature=0.7,
+        // think=false) are silently dropped from the wire payload — and Ollama then
+        // defaults `stream` to false, returning a single JSON object that our
+        // SSE reader hangs on forever.
+        encodeDefaults = true
+        explicitNulls = false
+    }
     private val jsonMedia = "application/json; charset=utf-8".toMediaType()
 
     override fun streamChat(messages: List<ChatMessage>): Flow<LlmStreamEvent> = flow {
+        val think = AppConfig.disableThinking?.let { !it }   // disableThinking=true → think=false
         val payload = ChatCompletionRequest(
             model = model,
             messages = messages,
             stream = true,
+            think = think,
         )
         val body = json.encodeToString(ChatCompletionRequest.serializer(), payload)
             .toRequestBody(jsonMedia)

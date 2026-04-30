@@ -70,6 +70,13 @@ class ChatViewModel(
     init {
         viewModelScope.launch { observeAsr() }
         viewModelScope.launch { observeTts() }
+        // Eager init so the first PTT press isn't blocked on model loading.
+        viewModelScope.launch {
+            try { asr.init() } catch (e: Exception) { logE("ASR init failed", e) }
+        }
+        viewModelScope.launch {
+            try { tts.init() } catch (e: Exception) { logE("TTS init failed", e) }
+        }
     }
 
     fun ensureConversation() {
