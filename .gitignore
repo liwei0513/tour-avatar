@@ -42,3 +42,10 @@ app/src/main/assets/models/
 gen/
 proguard/
 release/
+
+# Build outputs
+app/build/
+build/
+
+# Local SDK path (machine-specific)
+local.properties

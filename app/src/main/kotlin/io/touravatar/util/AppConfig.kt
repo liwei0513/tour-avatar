@@ -12,13 +12,13 @@ object AppConfig {
      *  - 智谱:             https://open.bigmodel.cn/api/paas/v4
      *  - 百度文心:         https://qianfan.baidubce.com/v2
      */
-    var llmBaseUrl: String = "http://10.0.2.2:11434/v1"
+    var llmBaseUrl: String = "http://192.168.1.65:11434/v1"
 
     /** Optional bearer token. Empty for local Ollama. */
     var llmApiKey: String = ""
 
-    /** Model name. e.g. "gpt-4o-mini", "qwen2.5:7b", "glm-4-flash" */
-    var llmModel: String = "qwen2.5:7b"
+    /** Model name. e.g. "gpt-4o-mini", "gemma4:latest", "qwen2.5:7b", "glm-4-flash" */
+    var llmModel: String = "gemma4:latest"
 
     /** Conversational system prompt for the tour-guide persona. */
     var systemPrompt: String = """
