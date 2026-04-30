@@ -17,5 +17,8 @@ data class RagSnippet(
     val id: String,
     val title: String,
     val text: String,
-    val score: Double,
+    /** Alternative names / nicknames / English forms — improves recall on
+     *  the keyword retriever without a real tokenizer. */
+    val aliases: List<String> = emptyList(),
+    val score: Double = 0.0,
 )
