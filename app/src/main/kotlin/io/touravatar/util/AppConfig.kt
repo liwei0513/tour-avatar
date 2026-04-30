@@ -12,7 +12,7 @@ object AppConfig {
      *  - 智谱:             https://open.bigmodel.cn/api/paas/v4
      *  - 百度文心:         https://qianfan.baidubce.com/v2
      */
-    var llmBaseUrl: String = "http://192.168.1.65:11434/v1"
+    var llmBaseUrl: String = "http://192.168.7.122:11434/v1"
 
     /** Optional bearer token. Empty for local Ollama. */
     var llmApiKey: String = ""
