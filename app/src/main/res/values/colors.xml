@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tour-themed warm museum palette -->
+    <color name="brand_primary">#B8956A</color>
+    <color name="brand_primary_dark">#7C5E3F</color>
+    <color name="brand_accent">#E0B973</color>
+
+    <color name="bg_canvas">#1A1614</color>
+    <color name="bg_panel">#26201C</color>
+    <color name="bg_message_user">#3A2D22</color>
+    <color name="bg_message_assistant">#2C2522</color>
+
+    <color name="text_primary">#F2EAE0</color>
+    <color name="text_secondary">#A89889</color>
+    <color name="text_muted">#6E5F52</color>
+
+    <color name="ptt_idle">#B8956A</color>
+    <color name="ptt_recording">#D9533F</color>
+
+    <color name="status_ok">#7DB46C</color>
+    <color name="status_warn">#E0B973</color>
+    <color name="status_err">#D9533F</color>
+</resources>

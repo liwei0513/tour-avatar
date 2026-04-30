@@ -1,0 +1,44 @@
+# Gradle
+.gradle/
+build/
+out/
+local.properties
+gradle.properties.local
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.fleet/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Android
+*.apk
+*.aab
+*.dex
+captures/
+*.hprof
+
+# Keys & secrets
+*.jks
+*.keystore
+keystore.properties
+secrets.properties
+.env
+.env.*
+
+# Native libs (large, usually fetched from sherpa-onnx releases)
+app/src/main/jniLibs/
+
+# Models (large, downloaded at first run)
+app/src/main/assets/models/
+
+# Generated
+gen/
+proguard/
+release/
