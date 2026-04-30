@@ -22,11 +22,12 @@ GH_BASE="${GITHUB_MIRROR:-}https://github.com/k2-fsa/sherpa-onnx/releases/downlo
 GH_RAW="${GITHUB_MIRROR:-}https://raw.githubusercontent.com/k2-fsa/sherpa-onnx/master"
 HF="${HF_MIRROR:-https://hf-mirror.com}"
 
-# ASR: Paraformer Chinese, ~50MB
+# ASR: Paraformer Chinese, int8 quantized (~250MB; FP32 model.onnx is 785MB)
 ASR_HF="$HF/csukuangfj/sherpa-onnx-paraformer-zh-2024-03-09/resolve/main"
+ASR_MODEL_FILE="model.int8.onnx"
 
-# TTS: VITS Chinese (icefall-zh-aishell3), ~100MB
-TTS_HF="$HF/csukuangfj/vits-icefall-zh-aishell3/resolve/main"
+# TTS: VITS Chinese (zh-ll), ~115MB
+TTS_HF="$HF/csukuangfj/sherpa-onnx-vits-zh-ll/resolve/main"
 
 JNI_DIR="$APP_MAIN/jniLibs/arm64-v8a"
 API_DIR="$APP_MAIN/kotlin/com/k2fsa/sherpa/onnx"
@@ -85,12 +86,16 @@ fi
 
 echo "[3/3] downloading Chinese ASR (Paraformer) and TTS (VITS) models"
 
-curl -fL --progress-bar -o "$ASR_DIR/model.onnx"  "$ASR_HF/model.onnx"
+curl -fL --progress-bar -o "$ASR_DIR/model.onnx"  "$ASR_HF/$ASR_MODEL_FILE"
 curl -fL --progress-bar -o "$ASR_DIR/tokens.txt"  "$ASR_HF/tokens.txt"
 
 curl -fL --progress-bar -o "$TTS_DIR/model.onnx"   "$TTS_HF/model.onnx"
 curl -fL --progress-bar -o "$TTS_DIR/tokens.txt"   "$TTS_HF/tokens.txt"
 curl -fL --progress-bar -o "$TTS_DIR/lexicon.txt"  "$TTS_HF/lexicon.txt"
+# Optional FST data — improves Chinese number/date handling
+for fst in date.fst phone.fst number.fst; do
+    curl -fL -o "$TTS_DIR/$fst" "$TTS_HF/$fst" 2>/dev/null || true
+done
 
 echo "models staged at $MODELS_DIR"
 du -sh "$ASR_DIR" "$TTS_DIR"
