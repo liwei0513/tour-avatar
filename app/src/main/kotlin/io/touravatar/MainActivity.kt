@@ -6,12 +6,15 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.MotionEvent
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.webkit.WebViewAssetLoader
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -28,8 +31,14 @@ import io.touravatar.llm.OpenAiCompatibleClient
 import io.touravatar.rag.InMemoryRagRetriever
 import io.touravatar.ui.AvatarBridge
 import io.touravatar.ui.ChatAdapter
+import io.touravatar.voice.AsrManager
+import io.touravatar.voice.SherpaAsrManager
+import io.touravatar.voice.SherpaModelLayout
+import io.touravatar.voice.SherpaTtsManager
 import io.touravatar.voice.StubAsrManager
 import io.touravatar.voice.StubTtsManager
+import io.touravatar.voice.TtsManager
+import io.touravatar.util.logI
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -40,11 +49,25 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: ChatViewModel by viewModels {
         val repo = ChatRepository(AppDatabase.get(applicationContext))
+        val asr: AsrManager = if (SherpaModelLayout.asrAvailable(applicationContext)) {
+            logI("Using SherpaAsrManager (model files found)")
+            SherpaAsrManager(applicationContext)
+        } else {
+            logI("Using StubAsrManager (no ASR model — adb push models to ${SherpaModelLayout.asrDir(applicationContext)})")
+            StubAsrManager()
+        }
+        val tts: TtsManager = if (SherpaModelLayout.ttsAvailable(applicationContext)) {
+            logI("Using SherpaTtsManager (model files found)")
+            SherpaTtsManager(applicationContext)
+        } else {
+            logI("Using StubTtsManager (no TTS model — adb push models to ${SherpaModelLayout.ttsDir(applicationContext)})")
+            StubTtsManager()
+        }
         ChatVmFactory(
             ChatViewModel(
                 repo = repo,
-                asr = StubAsrManager(),
-                tts = StubTtsManager(),
+                asr = asr,
+                tts = tts,
                 llm = OpenAiCompatibleClient(),
                 rag = InMemoryRagRetriever(),
             )
@@ -68,6 +91,17 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     private fun setupAvatar() {
         val webView = binding.avatarWebView
+        // Serve bundled assets via virtual https origin so ES module imports
+        // (importmap → CDN) work — file:// origin is "null" and CORS-blocked.
+        val assetLoader = WebViewAssetLoader.Builder()
+            .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(this))
+            .build()
+        webView.webViewClient = object : WebViewClient() {
+            override fun shouldInterceptRequest(
+                view: WebView,
+                request: WebResourceRequest,
+            ): WebResourceResponse? = assetLoader.shouldInterceptRequest(request.url)
+        }
         webView.settings.apply {
             javaScriptEnabled = true
             domStorageEnabled = true
@@ -75,10 +109,9 @@ class MainActivity : AppCompatActivity() {
             mediaPlaybackRequiresUserGesture = false
         }
         webView.setBackgroundColor(0)
-        webView.webViewClient = WebViewClient()
         avatarBridge = AvatarBridge(webView)
         webView.addJavascriptInterface(avatarBridge, "TourAvatarBridge")
-        webView.loadUrl("file:///android_asset/avatar/index.html")
+        webView.loadUrl("https://appassets.androidplatform.net/assets/avatar/index.html")
     }
 
     private fun setupChatList() {
