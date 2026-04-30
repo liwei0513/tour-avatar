@@ -53,3 +53,6 @@ local.properties
 # sherpa-onnx artifacts (fetched via scripts/setup-sherpa.sh)
 app/src/main/jniLibs/
 models-staging/
+
+# VRM avatar model (fetched via scripts/setup-avatar.sh)
+app/src/main/assets/avatar/model.vrm
