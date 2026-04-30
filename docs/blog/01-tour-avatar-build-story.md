@@ -4,6 +4,16 @@
 > 17 个 commit、14 个文件夹、4K 一体机实测、踩了 3 个值得一讲的坑。
 > 仓库：https://github.com/liwei0513/tour-avatar
 
+![tour-avatar 在 4K 一体机上的真机效果](images/01-vrm-avatar-hero.png)
+
+## TL;DR · 给赶时间的读者
+
+- **是什么**：MIT 开源的安卓离线 AI 数字导览员，按住说话 → 端侧识别 → 流式 LLM → 流式合成 → 3D 数字人同步张嘴
+- **跑在哪**：4K 横屏一体机原生、APK 52 MB（含 sherpa-onnx 35 MB）、端到端延迟 8-20 s
+- **关键技术栈**：Kotlin + WebView/Three.js/three-vrm + Sherpa-onnx (Paraformer-zh + VITS-zh-ll) + OpenAI 兼容 SSE LLM（Gemma 4 实测） + Room
+- **三个值得讲的坑**：WebView 加载 ES module 的 CORS、kotlinx-serialization 默认值悄悄丢失、Gemma 4 thinking 模式塞满 reasoning 字段
+- **为什么写**：2026 文旅/博物馆数字化市场预算明显放量，把端侧 Agent 的工程化模板开源出来
+
 ---
 
 ## 0 · 为什么做这个
@@ -328,6 +338,16 @@ val payload = ChatCompletionRequest(
 ## 4 · 真机表现（4K 一体机）
 
 实测设备：EMEETING_3576（瑞芯微 RK 平台，Android 16 定制系统，3840×2160 横屏）
+
+按住右下方 PTT 圆按钮说"你好能听到吗"，端侧 Paraformer 中文模型识别完整：
+
+![ASR 真实工作中](images/02-asr-working.png)
+
+聊天面板上同步显示用户气泡 + 流式打字的导览员气泡，状态栏切到"思考中"：
+
+![聊天面板的流式打字效果](images/03-chat-panel.png)
+
+实测数字：
 
 | 指标 | 数值 |
 | --- | --- |
